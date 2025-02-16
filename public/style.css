@@ -1,0 +1,91 @@
+/* General Styles */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color:rgb(222, 101, 49);
+}
+
+nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 20px;
+    background-color: #ff385c;
+    color: white;
+    box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.logo {
+    height: 40px;
+}
+
+.search-bar {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.search-bar input {
+    padding: 10px;
+    width: 400px;
+    border-radius: 25px;
+    border: none;
+    outline: none;
+    font-size: 14px;
+    text-align: center;
+}
+
+.search-bar button {
+    padding: 10px 15px;
+    background-color: white;
+    border: none;
+    cursor: pointer;
+    border-radius: 25px;
+    margin-left: -40px;
+    font-weight: bold;
+    color: #ff385c;
+}
+git add .gitignore
+
+.nav-right {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.nav-right button {
+    padding: 10px 15px;
+    background-color: white;
+    color: #ff385c;
+    border: none;
+    cursor: pointer;
+    font-weight: bold;
+    border-radius: 20px;
+    transition: 0.3s;
+}
+
+.nav-right button:hover {
+    background-color: #ff637b;
+    color: white;
+}
+
+/* Hero Section */
+.hero {
+    text-align: center;
+    padding: 50px;
+}
+
+.hero button {
+    padding: 10px 20px;
+    background-color: #ff385c;
+    color: white;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+.hero button:hover {
+    background-color: #ff637b;
+}
