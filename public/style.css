@@ -17,9 +17,17 @@ nav {
     box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.1);
 }
 
-.logo {
-    height: 40px;
+.nav-left {
+    display: flex;
+    align-items: center;
+    gap: 10px;
 }
+
+
+.logo-svg {
+    height: 35px; 
+}
+
 
 .search-bar {
     flex: 1;

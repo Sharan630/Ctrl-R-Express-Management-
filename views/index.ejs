@@ -4,13 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ctrl-R Express</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="/style.css">
 </head>
 <body>
     <header>
         <nav>
             <div class="nav-left">
-                <img src="images/logo.png" alt="Ctrl-R Express Logo" class="logo">
+                <img src="/images/logo.svg" alt="Ctrl-R Express SVG Logo" class="logo-svg">
+                <p>Ctrl-R Express</p>
             </div>
 
             <div class="search-bar">
@@ -35,45 +36,27 @@
     <section class="destinations">
         <h2>Popular Destinations</h2>
         <div class="destination-grid">
-            <div class="destination-card">
-                <img src="images/mumbai.jpg" alt="Mumbai">
-                <h3>Mumbai</h3>
-            </div>
-            <div class="destination-card">
-                <img src="images/delhi.jpg" alt="Delhi">
-                <h3>Delhi</h3>
-            </div>
-            <div class="destination-card">
-                <img src="images/goa.jpg" alt="Goa">
-                <h3>Goa</h3>
-            </div>
+            <% destinations.forEach(destination => { %>
+                <div class="destination-card">
+                    <img src="<%= destination.image %>" alt="<%= destination.name %>">
+                    <h3><%= destination.name %></h3>
+                </div>
+            <% }); %>
         </div>
     </section>
 
     <section class="buses">
         <h2>Recommended Bus Services</h2>
         <div class="bus-grid">
-            <div class="bus-card">
-                <img src="images/bus1.jpg" alt="Redline Express">
-                <h3>Redline Express</h3>
-                <p>Route: Delhi → Mumbai</p>
-                <p>Price: ₹1500</p>
-                <button>Book Now</button>
-            </div>
-            <div class="bus-card">
-                <img src="images/bus2.jpg" alt="Blue Star Travels">
-                <h3>Blue Star Travels</h3>
-                <p>Route: Bangalore → Hyderabad</p>
-                <p>Price: ₹1200</p>
-                <button>Book Now</button>
-            </div>
-            <div class="bus-card">
-                <img src="images/bus3.jpg" alt="Green Metro">
-                <h3>Green Metro</h3>
-                <p>Route: Chennai → Pune</p>
-                <p>Price: ₹1800</p>
-                <button>Book Now</button>
-            </div>
+            <% buses.forEach(bus => { %>
+                <div class="bus-card">
+                    <img src="<%= bus.image %>" alt="<%= bus.name %>">
+                    <h3><%= bus.name %></h3>
+                    <p>Route: <%= bus.route %></p>
+                    <p>Price: ₹<%= bus.price %></p>
+                    <button>Book Now</button>
+                </div>
+            <% }); %>
         </div>
     </section>
 
