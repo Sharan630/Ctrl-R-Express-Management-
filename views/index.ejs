@@ -35,13 +35,17 @@
 
     <section class="destinations">
         <h2>Popular Destinations</h2>
-        <div class="destination-grid">
-            <% destinations.forEach(destination => { %>
-                <div class="destination-card">
-                    <img src="<%= destination.image %>" alt="<%= destination.name %>">
-                    <h3><%= destination.name %></h3>
-                </div>
-            <% }); %>
+        <div class="slider-container">
+            <div class="slides">
+                <% destinations.forEach(destination => { %>
+                    <div class="slide">
+                        <img src="<%= destination.image %>" alt="<%= destination.name %>">
+                        <h3><%= destination.name %></h3>
+                    </div>
+                <% }); %>
+            </div>
+            <button class="prev" onclick="moveSlide(-1)">&#10094;</button>
+            <button class="next" onclick="moveSlide(1)">&#10095;</button>
         </div>
     </section>
 
@@ -84,6 +88,20 @@
                 toggleButton.textContent = "🌙 Dark Mode";
             }
         });
+
+        let index = 0;
+
+        function moveSlide(direction) {
+            const slides = document.querySelector(".slides");
+            const totalSlides = document.querySelectorAll(".slide").length;
+
+            index += direction;
+            if (index < 0) index = totalSlides - 1;
+            if (index >= totalSlides) index = 0;
+
+            slides.style.transform = `translateX(-${index * 100}%)`;
+        }
+        setInterval(() => moveSlide(1), 5000);
     </script>
 </body>
 </html>

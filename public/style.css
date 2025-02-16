@@ -1,11 +1,9 @@
-
 body {
     font-family: Arial, sans-serif;
     margin: 0;
     padding: 0;
     background-color: rgb(222, 101, 49);
 }
-
 
 nav {
     display: flex;
@@ -23,11 +21,9 @@ nav {
     gap: 10px;
 }
 
-
 .logo-svg {
     height: 35px; 
 }
-
 
 .search-bar {
     flex: 1;
@@ -38,7 +34,7 @@ nav {
 
 .search-bar input {
     padding: 10px;
-    width: 400px;
+    width: 500px;
     border-radius: 25px;
     border: none;
     outline: none;
@@ -56,7 +52,6 @@ nav {
     font-weight: bold;
     color: #ff385c;
 }
-
 
 .dark-mode {
     background-color: #121212;
@@ -90,7 +85,7 @@ nav {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    height: 50vh; /* Adjust based on your layout */
+    height: 50vh;
 }
 
 .hero h1 {
@@ -117,3 +112,39 @@ nav {
     background-color: #ff637b;
 }
 
+.destination-slider {
+    position: relative;
+    width: 80%;
+    margin: auto;
+    overflow: hidden;
+}
+
+.slides {
+    display: flex;
+    transition: transform 0.5s ease-in-out;
+}
+
+.slide {
+    min-width: 100%;
+    text-align: center;
+}
+
+.slide img {
+    width: 90%;
+    max-height: 500px;
+    border-radius: 10px;
+}
+
+.prev, .next {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background-color: rgba(0, 0, 0, 0.5);
+    color: white;
+    border: none;
+    padding: 10px;
+    cursor: pointer;
+}
+
+.prev { left: 0; }
+.next { right: 0; }
