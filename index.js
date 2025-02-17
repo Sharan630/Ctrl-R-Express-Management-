@@ -31,7 +31,7 @@ app.use(
         cookie: {
             httpOnly: true,
             secure: process.env.NODE_ENV === "production",
-            maxAge: 60 * 60 * 1000, // Set session expiration time
+            maxAge: 60 * 60 * 1000, 
         },
     })
 );
@@ -120,7 +120,6 @@ app.listen(port, () => {
     console.log(`Server is running on http://localhost:${port}`);
 });
 
-// 🔹 Passport Local Strategy
 passport.use(
     "local",
     new Strategy(async function (username, password, done) {
@@ -138,7 +137,6 @@ passport.use(
     })
 );
 
-// 🔹 Passport Google OAuth Strategy
 passport.use(
     new GoogleStrategy(
         {
@@ -164,7 +162,6 @@ passport.use(
     )
 );
 
-// 🔹 Serialize & Deserialize User
 passport.serializeUser((user, done) => {
     done(null, user);
 });
