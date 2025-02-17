@@ -4,19 +4,233 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        /* Full-screen background with gradient */
+        body {
+            width: 100%;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(135deg, #1a1a1a, #444);
+        }
+
+        /* Transparent Navbar */
+        nav {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 15px 20px;
+            background: rgba(255, 255, 255, 0.1); /* Transparent effect */
+            backdrop-filter: blur(10px); /* Frosted glass effect */
+            color: white;
+            box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.1);
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+        }
+
+        .nav-left {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo-svg {
+            height: 40px;
+        }
+
+        .site-title {
+            font-size: 14px;
+        }
+
+        .search-bar {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .search-bar input {
+            padding: 8px;
+            border-radius: 20px;
+            border: 1px solid white;
+            outline: none;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            padding-left: 15px;
+        }
+
+        .search-bar input::placeholder {
+            color: white;
+            opacity: 0.8;
+        }
+
+        .search-bar button {
+            background-color: white;
+            color: #ff385c;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .search-bar button:hover {
+            background-color: #ff385c;
+            color: white;
+        }
+
+        /* Login container */
+        .container {
+            background-color: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            width: 320px;
+            text-align: center;
+            margin-top: 80px; /* To avoid navbar overlap */
+        }
+
+        form {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .user, .pass {
+            margin-bottom: 15px;
+            display: flex;
+            flex-direction: column;
+            text-align: left;
+            color: black;
+        }
+
+        label {
+            font-size: 14px;
+            margin-bottom: 5px;
+        }
+
+        input {
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        button {
+            background-color: #333;
+            color: white;
+            border: none;
+            padding: 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 10px;
+            transition: 0.3s;
+        }
+
+        button:hover {
+            background-color: black;
+        }
+
+        a {
+            color: #ff385c;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+        svg {
+            margin-right: 10px;
+        }
+        /* Google Sign-in Button */
+        .google-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: white;
+            color: black;
+            border: 1px solid #ccc;
+            padding: 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 10px;
+            font-weight: bold;
+            transition: 0.3s;
+        }
+        #but {
+            margin-bottom: 10px;
+        }
+
+        .google-btn img {
+            margin-right: 8px;
+            width: 20px;
+            height: 20px;
+        }
+
+        .google-btn:hover {
+            background-color: #f0f0f0;
+        }
+    </style>
 </head>
 <body>
-    <!-- <h1>Login will be available</h1> -->
-    <form action="/signup" method="post">
-        <label for="user">Enter the username:</label>
-        <input type="text" id="user" name="username" placeholder="Username" required>
-    
-        <label for="pass">Enter the password:</label>
-        <input type="password" id="pass" name="password" placeholder="Password" required>
-    
-        <button type="submit">Sign up</button>
-    </form>
-    <p>Already have an account? <a href="/login">Login</a></p>
-    <button role="button" onclick="window.location.href='/auth/google'">Sign up with google</button>
+
+    <!-- Transparent Navigation Bar -->
+    <nav>
+        <div class="nav-left">
+            <img src="/images/logo.svg" alt="Logo" class="logo-svg" onerror="this.style.display='none';">
+            <span class="site-title">Ctrl-R Express</span>
+        </div>
+        <div class="search-bar">
+            <input type="text" placeholder="Search">
+            <button id="but">Search</button>
+        </div>
+    </nav>
+
+    <!-- Login Form -->
+    <div class="container">
+        <h3>sign-up</h3>
+        <form action="/signup" method="post">
+            <div class="user">
+                <label for="user">Enter the username:</label>
+                <input type="text" id="user" name="username" placeholder="Username" required>
+            </div>
+
+            <div class="pass">
+                <label for="pass">Create your password:</label>
+                <input type="password" id="pass" name="password" placeholder="Password" required>
+            </div>
+
+            <button type="submit">Sign Up</button>
+        </form>
+
+        <p>Already have an account? <a href="/login">Login</a></p>
+
+        <button class="google-btn" onclick="window.location.href='/auth/google'">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-google" viewBox="0 0 16 16">
+                <path d="M15.545 6.558a9.4 9.4 0 0 1 .139 1.626c0 2.434-.87 4.492-2.384 5.885h.002C11.978 15.292 
+                         10.158 16 8 16A8 8 0 1 1 8 0a7.7 7.7 0 0 1 5.352 2.082l-2.284 2.284A4.35 4.35 0 0 0 8 
+                         3.166c-2.087 0-3.86 1.408-4.492 3.304a4.8 4.8 0 0 0 0 3.063h.003c.635 1.893 2.405 
+                         3.301 4.492 3.301 1.078 0 2.004-.276 2.722-.764h-.003a3.7 3.7 0 0 0 1.599-2.431H8v-3.08z"/>
+            </svg>
+            Sign up with Google
+        </button>
+    </div>
+
 </body>
 </html>

@@ -170,6 +170,9 @@
             width: 20px;
             height: 20px;
         }
+        #but {
+            margin-bottom: 10px;
+        }
 
         .google-btn:hover {
             background-color: #f0f0f0;
@@ -187,13 +190,14 @@
         </div>
         <div class="search-bar">
             <input type="text" placeholder="Search by city, bus, or landmark">
-            <button>Search</button>
+            <button id="but">Search</button>
         </div>
     </nav>
 
     <!-- Login Form -->
     <div class="container">
         <form action="/login" method="post">
+            <h3>Login</h3>
             <div class="user">
                 <label for="user">Enter the username:</label>
                 <input type="text" id="user" name="username" placeholder="Username" required>
