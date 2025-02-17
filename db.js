@@ -4,7 +4,7 @@ import mysql from 'mysql2/promise';
 const connection = await mysql.createConnection({
   host: 'localhost',      // Change if your MySQL Workbench runs on another host
   user: 'root',           // Replace with your MySQL username
-  password: 'Root@123',  // Replace with your MySQL password
+  password: 'Ramcharan@1104',  // Replace with your MySQL password
   database: 'bus'  // The database you created in Workbench
 });
 
