@@ -29,11 +29,7 @@ app.use(
         secret: "topsecret",
         resave: false,
         saveUninitialized: false,
-        cookie: {
-            httpOnly: false,
-            secure: false,
-            maxAge: null,
-        },
+        cookie: { maxAge: null } // Session expires on browser close
     })
 );
 app.use(passport.session());
@@ -76,10 +72,17 @@ app.get("/dashboard", (req, res) => {
 });
 
 // 🔹 Google OAuth Authentication Route
-app.get(
-    "/auth/google",
-    passport.authenticate("google", { scope: ["profile", "email"] })
-);
+app.get("/auth/google", async (req, res, next) => {
+    if (req.isAuthenticated()) {
+        return res.redirect("/dashboard"); // Redirect if user is already authenticated
+    }
+    next(); // Proceed to Google login if user is not authenticated
+}, 
+passport.authenticate("google", {
+    scope: ["profile", "email"],
+    prompt: "select_account", // Forces account selection only for new users
+}));
+
 
 // 🔹 Google OAuth Callback Route
 app.get(
@@ -146,8 +149,8 @@ passport.use(
 passport.use(
     new GoogleStrategy(
         {
-            clientID: process.GOOGLE_CLIENT_ID = '48522396032-avggve082tn8fre3mibab9vcogkffi6c.apps.googleusercontent.com',
-            clientSecret: process.GOOGLE_CLIENT_SECRET = "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",
+            clientID: process.env.GOOGLE_CLIENT_ID,
+            clientSecret: process.env.GOOGLE_CLIENT_SECRET,
             callbackURL: "http://localhost:3002/auth/google/authen",
         },
         async (accessToken, refreshToken, profile, done) => {
@@ -173,6 +176,15 @@ passport.serializeUser((user, done) => {
     done(null, user);
 });
 
-passport.deserializeUser((user, done) => {
-    done(null, user);
+passport.deserializeUser(async (user, done) => {
+    try {
+        const [users] = await connection.execute("SELECT * FROM users WHERE username = ?", [user.username]);
+        if (users.length === 0) {
+            return done(null, false);  // Force re-authentication
+        }
+        done(null, users[0]);
+    } catch (err) {
+        done(err, null);
+    }
 });
+
