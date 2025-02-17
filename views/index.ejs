@@ -20,8 +20,13 @@
             </div>
 
             <div class="nav-right">
+                <% if(userdetail){ %> 
+                    <h4>welcome back, <%=userdetail %></h4>
+                <%}else{%>
                 <button role="button" onclick="window.location.href='/login'">Login</button>
                 <button role="button" onclick="window.location.href='/signup'">Sign Up</button>
+                <% } %>
+                
                 <button id="theme-toggle">🌙 Dark Mode</button>
             </div>
         </nav>

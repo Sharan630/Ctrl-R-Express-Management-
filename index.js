@@ -18,7 +18,6 @@ env.config();
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// Set up EJS as the template engine
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
 
@@ -26,17 +25,19 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, "public")));
 app.use(
     session({
-        secret: "topsecret",
+        secret: process.env.SESSION_SECRET || "topsecret",
         resave: false,
         saveUninitialized: false,
-        cookie: { maxAge: null } // Session expires on browser close
+        cookie: {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === "production",
+            maxAge: 60 * 60 * 1000, 
+        },
     })
 );
 app.use(passport.session());
 
 app.use(passport.initialize());
-
-
 
 const destinations = [
     { name: "Mumbai", image: "/images/mumbai.jpg" },
@@ -46,13 +47,17 @@ const destinations = [
 
 const buses = [
     { name: "Redline Express", route: "Delhi → Mumbai", price: 1500, image: "/images/bus1.jpg" },
-    { name: "Blue Star Travels", route: "Bangalore → Hyderabad", price: 1200, image: "/images/bus2.jpg" },
+    { name: "Blue Star Travels", route: "Bangalore → Hyderabad", price: 1200, image: "/images/bus2.jpeg" },
     { name: "Green Metro", route: "Chennai → Pune", price: 1800, image: "/images/bus3.jpg" }
 ];
 
 // Routes
 app.get("/", (req, res) => {
-    res.render("index", { destinations, buses });
+    let userdetail = req.isAuthenticated() ? req.user.username : null;
+    if (userdetail && userdetail.includes("@")) {
+        userdetail = userdetail.split("@")[0];
+    }
+    res.render("index", { destinations, buses, userdetail });
 });
 
 app.get("/login", (req, res) => {
@@ -63,32 +68,25 @@ app.get("/signup", (req, res) => {
     res.render("signup");
 });
 
-app.get("/dashboard", (req, res) => {
+app.get("/", (req, res) => {
     if (req.isAuthenticated()) {
-        res.render("dashboard");
+        res.render("/");
     } else {
         res.redirect("/login");
     }
 });
 
 // 🔹 Google OAuth Authentication Route
-app.get("/auth/google", async (req, res, next) => {
-    if (req.isAuthenticated()) {
-        return res.redirect("/dashboard"); // Redirect if user is already authenticated
-    }
-    next(); // Proceed to Google login if user is not authenticated
-}, 
-passport.authenticate("google", {
-    scope: ["profile", "email"],
-    prompt: "select_account", // Forces account selection only for new users
-}));
-
+app.get(
+    "/auth/google",
+    passport.authenticate("google", { scope: ["profile", "email"] })
+);
 
 // 🔹 Google OAuth Callback Route
 app.get(
     "/auth/google/authen",
     passport.authenticate("google", {
-        successRedirect: "/dashboard",
+        successRedirect: "/",
         failureRedirect: "/login",
     })
 );
@@ -97,7 +95,7 @@ app.get(
 app.post(
     "/login",
     passport.authenticate("local", {
-        successRedirect: "/dashboard",
+        successRedirect: "/",
         failureRedirect: "/login",
     })
 );
@@ -105,7 +103,6 @@ app.post(
 // 🔹 Local Signup Route
 app.post("/signup", async (req, res) => {
     const { username, password } = req.body;
-
     try {
         const [users] = await connection.execute("SELECT * FROM users WHERE username = ?", [username]);
 
@@ -118,7 +115,7 @@ app.post("/signup", async (req, res) => {
 
         res.redirect("/login");
     } catch (error) {
-        console.error(error);
+        console.error("Error during signup:", error);
         res.status(500).send("Internal Server Error");
     }
 });
@@ -127,7 +124,6 @@ app.listen(port, () => {
     console.log(`Server is running on http://localhost:${port}`);
 });
 
-// 🔹 Passport Local Strategy
 passport.use(
     "local",
     new Strategy(async function (username, password, done) {
@@ -139,18 +135,17 @@ passport.use(
             }
             return done(null, false);
         } catch (error) {
-            console.error(error);
+            console.error("Error during local strategy:", error);
             return done(error);
         }
     })
 );
 
-// 🔹 Passport Google OAuth Strategy
 passport.use(
     new GoogleStrategy(
         {
-            clientID: process.env.GOOGLE_CLIENT_ID,
-            clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+            clientID: process.GOOGLE_CLIENT_ID = '48522396032-avggve082tn8fre3mibab9vcogkffi6c.apps.googleusercontent.com',
+            clientSecret: process.GOOGLE_CLIENT_SECRET = "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",
             callbackURL: "http://localhost:3002/auth/google/authen",
         },
         async (accessToken, refreshToken, profile, done) => {
@@ -164,27 +159,17 @@ passport.use(
                     return done(null, newUser[0]);
                 }
             } catch (err) {
-                console.error(err);
+                console.error("Error during Google OAuth strategy:", err);
                 return done(err);
             }
         }
     )
 );
 
-// 🔹 Serialize & Deserialize User
 passport.serializeUser((user, done) => {
     done(null, user);
 });
 
-passport.deserializeUser(async (user, done) => {
-    try {
-        const [users] = await connection.execute("SELECT * FROM users WHERE username = ?", [user.username]);
-        if (users.length === 0) {
-            return done(null, false);  // Force re-authentication
-        }
-        done(null, users[0]);
-    } catch (err) {
-        done(err, null);
-    }
+passport.deserializeUser((user, done) => {
+    done(null, user);
 });
-
