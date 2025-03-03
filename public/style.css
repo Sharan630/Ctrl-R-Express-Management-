@@ -74,51 +74,60 @@ nav {
     color: white;
 }
 
-
 .hero {
+    position: relative;
+    width: 100%;
+    height: 85vh; 
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    overflow: hidden;
     text-align: center;
-    padding: 50px;
+}
+
+.hero-video {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: -1;
+}
+
+/* New Wrapper for text & button */
+.hero-content {
+    position: absolute;
+    bottom: 10%;
+    left: 50%;
+    transform: translateX(-50%);
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
-    height: 50vh;
-    background-image: url('/images/virat.jpg');
-    background-size: contain;
-    background-position: center;
-    background-repeat: no-repeat;
-    background-color: black; 
-    color: white; 
-    text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.7);
-}
-
-.dark-mode .hero {
-    text-shadow: 3px 3px 8px rgba(255, 255, 255, 0.8);
-}
-
-.hero h1 {
-    font-size: 2.5rem;
-    margin-bottom: 10px;
 }
 
 .hero p {
-    font-size: 1.2rem;
-    margin-bottom: 20px;
+    color: whitesmoke;
+    font-size: 1.5rem;
+    margin-bottom: 15px; /* Ensures spacing between text and button */
 }
 
 .hero button {
-    padding: 10px 20px;
     background-color: #ff385c;
     color: white;
     border: none;
+    padding: 12px 24px;
+    font-size: 1.2rem;
+    border-radius: 8px;
     cursor: pointer;
-    border-radius: 5px;
-    font-size: 1rem;
+    transition: 0.3s;
 }
 
 .hero button:hover {
-    background-color: #ff637b;
+    background-color: #e63250;
 }
+
 
 
 .destinations {
