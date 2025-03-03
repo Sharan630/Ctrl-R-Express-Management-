@@ -21,7 +21,7 @@
 
             <div class="nav-right">
                 <% if(userdetail){ %> 
-                    <h4>welcome back, <%=userdetail %></h4>
+                    <h4>Welcome back, <%= userdetail %></h4>
                 <%}else{%>
                 <button role="button" onclick="window.location.href='/login'">Login</button>
                 <button role="button" onclick="window.location.href='/signup'">Sign Up</button>
@@ -33,10 +33,14 @@
     </header>
 
     <section class="hero">
-        <h1>Find Your Perfect Bus Journey</h1>
+        <video autoplay muted loop class="hero-video">
+            <source src="" type="video/mp4">
+            Your browser does not support the video tag.
+        </video>
         <p>Best travel options at unbeatable prices.</p>
         <button>Explore Now</button>
     </section>
+    
 
     <section class="destinations">
         <h2>Popular Destinations</h2>
@@ -63,11 +67,14 @@
                     <h3><%= bus.name %></h3>
                     <p>Route: <%= bus.route %></p>
                     <p>Price: ₹<%= bus.price %></p>
-                    <button>Book Now</button>
+                    <button onclick="window.location.href='/book?bus=<%= bus.name %>&route=<%= bus.route %>&price=<%= bus.price %>'">
+                        Book Now
+                    </button>
                 </div>
             <% }); %>
         </div>
     </section>
+    
 
     <footer>
         <p>© 2025 Ctrl-R Xpress. All rights reserved.</p>
