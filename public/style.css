@@ -1,6 +1,6 @@
-/* General Styles */
+
 body {
-    font-family: Arial, sans-serif;
+    font-family: 'Poppins', Arial, sans-serif;
     margin: 0;
     padding: 0;
     background-color: rgb(222, 101, 49);
@@ -54,7 +54,6 @@ nav {
     color: #ff385c;
 }
 
-/* Dark Mode Styles */
 .dark-mode {
     background-color: #121212;
     color: white;
@@ -75,11 +74,7 @@ nav {
     color: white;
 }
 
-.dark-mode .hero button {
-    background-color: #444;
-}
 
-/* Hero Section */
 .hero {
     text-align: center;
     padding: 50px;
@@ -88,6 +83,17 @@ nav {
     align-items: center;
     justify-content: center;
     height: 50vh;
+    background-image: url('/images/virat.jpg');
+    background-size: contain;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-color: black; 
+    color: white; 
+    text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.7);
+}
+
+.dark-mode .hero {
+    text-shadow: 3px 3px 8px rgba(255, 255, 255, 0.8);
 }
 
 .hero h1 {
@@ -114,6 +120,7 @@ nav {
     background-color: #ff637b;
 }
 
+
 .destinations {
     padding: 5px 20px;
     background-color: #454141;
@@ -126,10 +133,10 @@ nav {
     color: #ff385c;
 }
 
+
 .slider-container {
     position: relative;
     width: 100%;
-   
     margin: auto;
     overflow: hidden;
     border-radius: 15px;
@@ -152,6 +159,7 @@ nav {
     border-radius: 10px; 
     margin-bottom: 20px;
 }
+
 
 .prev, .next {
     position: absolute;
@@ -236,7 +244,7 @@ nav {
     background-color: #ff637b;
 }
 
-/* Footer */
+
 footer {
     padding: 20px;
     background-color: #ff385c;
@@ -251,7 +259,7 @@ footer p {
     font-size: 0.9rem;
 }
 
-/* Dark Mode Adjustments for Buses Section */
+
 .dark-mode .buses {
     background-color: #333;
 }
@@ -269,3 +277,4 @@ footer p {
 .dark-mode footer {
     background-color: #222;
 }
+

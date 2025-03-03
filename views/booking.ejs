@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book Your Ride - Ctrl-R Xpress</title>
+    <link rel="stylesheet" href="/booking.css">
+</head>
+<body>
+    
+    <header>
+        <h1>🚍 Book Your Journey</h1>
+        <p>Secure your seat in just a few clicks!</p>
+    </header>
+
+    <section class="booking-container">
+        <div class="bus-info">
+            <h2><%= busName %></h2>
+            <p><strong>Route:</strong> <%= busRoute %></p>
+            <p><strong>Price:</strong> ₹<%= busPrice %> per seat</p>
+        </div>
+
+        <div class="seat-selection">
+            <h3>Select Your Seats (<span id="seat-count">0</span> Selected)</h3>
+            <div class="seats-grid">
+                <% for (let i = 1; i <= 40; i++) { %>
+                    <div class="seat" onclick="selectSeat(this)" data-seat="<%= i %>">
+                        <%= i %>
+                    </div>
+                <% } %>
+            </div>
+        </div>
+
+        <div class="passenger-details" id="passenger-details" style="display: none;">
+            <h3>Passenger Details</h3>
+            <form id="passenger-form">
+                <div id="passenger-fields"></div>
+                <button type="submit" class="proceed-btn">Proceed to Payment 💳</button>
+            </form>
+        </div>
+    </section>
+
+    <script>
+        let selectedSeats = [];
+
+        function selectSeat(seat) {
+            const seatNumber = seat.getAttribute("data-seat");
+
+            if (selectedSeats.includes(seatNumber)) {
+                
+                selectedSeats = selectedSeats.filter(num => num !== seatNumber);
+                seat.classList.remove("selected");
+            } else {
+                
+                selectedSeats.push(seatNumber);
+                seat.classList.add("selected");
+            }
+
+            document.getElementById("seat-count").textContent = selectedSeats.length;
+            updatePassengerForm();
+        }
+
+        function updatePassengerForm() {
+            const formContainer = document.getElementById("passenger-fields");
+            formContainer.innerHTML = ""; 
+
+            if (selectedSeats.length > 0) {
+                document.getElementById("passenger-details").style.display = "block";
+
+                for (let i = 0; i < selectedSeats.length; i++) {
+                    formContainer.innerHTML += `
+                        <div class="passenger-input">
+                            <label>Passenger ${i + 1} Name:</label>
+                            <input type="text" name="passenger${i + 1}-name" required placeholder="Enter Name">
+                            <label>Age:</label>
+                            <input type="number" name="passenger${i + 1}-age" required placeholder="Enter Age" min="1">
+                        </div>
+                    `;
+                }
+            } else {
+                document.getElementById("passenger-details").style.display = "none";
+            }
+        }
+    </script>
+
+</body>
+</html>

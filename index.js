@@ -8,12 +8,13 @@ import passport from "passport";
 import { Strategy } from "passport-local";
 import GoogleStrategy from "passport-google-oauth2";
 import session from "express-session";
-import env from "dotenv";
+import dotenv from "dotenv";
+
+dotenv.config();
 
 const app = express();
 const port = 3002;
 const saltRounds = 10;
-env.config();
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -31,12 +32,11 @@ app.use(
         cookie: {
             httpOnly: true,
             secure: process.env.NODE_ENV === "production",
-            maxAge: 60 * 60 * 1000, 
+            maxAge: 60 * 60 * 1000,
         },
     })
 );
 app.use(passport.session());
-
 app.use(passport.initialize());
 
 const destinations = [
@@ -51,7 +51,6 @@ const buses = [
     { name: "Green Metro", route: "Chennai → Pune", price: 1800, image: "/images/bus3.jpg" }
 ];
 
-// Routes
 app.get("/", (req, res) => {
     let userdetail = req.isAuthenticated() ? req.user.username : null;
     if (userdetail && userdetail.includes("@")) {
@@ -60,29 +59,15 @@ app.get("/", (req, res) => {
     res.render("index", { destinations, buses, userdetail });
 });
 
-app.get("/login", (req, res) => {
-    res.render("login");
-});
 
-app.get("/signup", (req, res) => {
-    res.render("signup");
-});
+app.get("/login", (req, res) => res.render("login"));
+app.get("/signup", (req, res) => res.render("signup"));
 
-app.get("/", (req, res) => {
-    if (req.isAuthenticated()) {
-        res.render("/");
-    } else {
-        res.redirect("/login");
-    }
-});
-
-// 🔹 Google OAuth Authentication Route
 app.get(
     "/auth/google",
     passport.authenticate("google", { scope: ["profile", "email"] })
 );
 
-// 🔹 Google OAuth Callback Route
 app.get(
     "/auth/google/authen",
     passport.authenticate("google", {
@@ -91,7 +76,6 @@ app.get(
     })
 );
 
-// 🔹 Local Login Route
 app.post(
     "/login",
     passport.authenticate("local", {
@@ -100,7 +84,6 @@ app.post(
     })
 );
 
-// 🔹 Local Signup Route
 app.post("/signup", async (req, res) => {
     const { username, password } = req.body;
     try {
@@ -120,12 +103,20 @@ app.post("/signup", async (req, res) => {
     }
 });
 
+app.get("/book", (req, res) => {
+    const { bus, route, price } = req.query;
+    res.render("booking", { 
+        busName: bus, 
+        busRoute: route, 
+        busPrice: price 
+    });
+});
+
 app.listen(port, () => {
-    console.log(`Server is running on http://localhost:${port}`);
+    console.log(`✅ Server running on http://localhost:${port}`);
 });
 
 passport.use(
-    "local",
     new Strategy(async function (username, password, done) {
         try {
             const [users] = await connection.execute("SELECT * FROM users WHERE username = ?", [username]);
@@ -144,8 +135,8 @@ passport.use(
 passport.use(
     new GoogleStrategy(
         {
-            clientID: process.GOOGLE_CLIENT_ID = '48522396032-avggve082tn8fre3mibab9vcogkffi6c.apps.googleusercontent.com',
-            clientSecret: process.GOOGLE_CLIENT_SECRET = "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",
+            clientID: process.env.GOOGLE_CLIENT_ID,
+            clientSecret: process.env.GOOGLE_CLIENT_SECRET,
             callbackURL: "http://localhost:3002/auth/google/authen",
         },
         async (accessToken, refreshToken, profile, done) => {
@@ -166,10 +157,5 @@ passport.use(
     )
 );
 
-passport.serializeUser((user, done) => {
-    done(null, user);
-});
-
-passport.deserializeUser((user, done) => {
-    done(null, user);
-});
+passport.serializeUser((user, done) => done(null, user));
+passport.deserializeUser((user, done) => done(null, user));
