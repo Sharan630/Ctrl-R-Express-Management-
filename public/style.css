@@ -96,7 +96,6 @@ nav {
     z-index: -1;
 }
 
-/* New Wrapper for text & button */
 .hero-content {
     position: absolute;
     bottom: 10%;
@@ -110,7 +109,7 @@ nav {
 .hero p {
     color: whitesmoke;
     font-size: 1.5rem;
-    margin-bottom: 15px; /* Ensures spacing between text and button */
+    margin-bottom: 15px; 
 }
 
 .hero button {
