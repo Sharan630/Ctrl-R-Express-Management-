@@ -94,6 +94,31 @@ body {
     opacity: 0.6;
 }
 
+.passenger-details {
+    margin-top: 20px;
+    text-align: left;
+}
+
+.passenger-input {
+    margin-bottom: 15px;
+}
+
+.passenger-input label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+    color: #333;
+}
+
+.passenger-input input {
+    width: 100%;
+    padding: 8px;
+    box-sizing: border-box;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
 .proceed-btn {
     background: linear-gradient(135deg, #ff385c, #ff6384);
     color: white;
@@ -137,6 +162,16 @@ body {
 .dark-mode .seat.reserved {
     background: #888;
     color: #ccc;
+}
+
+.dark-mode .passenger-input label {
+    color: #ddd;
+}
+
+.dark-mode .passenger-input input {
+    background: #333;
+    color: white;
+    border: 1px solid #555;
 }
 
 .dark-mode .proceed-btn {

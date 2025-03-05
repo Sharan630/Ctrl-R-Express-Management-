@@ -59,7 +59,6 @@ app.get("/", (req, res) => {
     res.render("index", { destinations, buses, userdetail });
 });
 
-
 app.get("/login", (req, res) => res.render("login"));
 app.get("/signup", (req, res) => res.render("signup"));
 
@@ -96,20 +95,58 @@ app.post("/signup", async (req, res) => {
         const hashedPassword = await bcrypt.hash(password, saltRounds);
         await connection.execute("INSERT INTO users (username, password) VALUES (?, ?)", [username, hashedPassword]);
 
-        res.redirect("/login");
+        res.redirect("/");
     } catch (error) {
         console.error("Error during signup:", error);
         res.status(500).send("Internal Server Error");
     }
 });
 
-app.get("/book", (req, res) => {
+function ensureAuthenticated(req, res, next) {
+    if (req.isAuthenticated()) {
+        return next();
+    }
+    res.redirect("/login");
+}
+
+app.get("/book", ensureAuthenticated, (req, res) => {
     const { bus, route, price } = req.query;
+    const userdetail = req.user.username;
+
     res.render("booking", { 
         busName: bus, 
         busRoute: route, 
-        busPrice: price 
+        busPrice: price,
+        userdetail
     });
+});
+
+app.post("/payment", ensureAuthenticated, async (req, res) => {
+    const { bus, route, price, seats } = req.body;
+    const user_id = req.user.id;
+    const username = req.user.username;
+
+    try {
+        const paymentStatus = 'Success'; 
+        const seatsArray = JSON.stringify(seats.split(","));
+        const decodedRoute = decodeURIComponent(route);
+
+        await connection.execute(
+            "INSERT INTO payments (user_id, username, bus, route, price, seats, payment_status, seat_reserved) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+            [user_id, username, bus, decodedRoute, price, seatsArray, paymentStatus, 1]
+        );
+
+        res.redirect(`/summary?bus=${encodeURIComponent(bus)}&route=${encodeURIComponent(decodedRoute)}&price=${price}&seats=${seatsArray}&status=${paymentStatus}`);
+    } catch (error) {
+        console.error("Error during payment processing:", error);
+        res.status(500).send("Internal Server Error");
+    }
+});
+
+
+app.get("/summary", (req, res) => {
+    const { bus, route, price, seats, status } = req.query;
+    res.render("summary", { bus, route, price, seats, status });
 });
 
 app.listen(port, () => {
@@ -121,6 +158,9 @@ passport.use(
         try {
             const [users] = await connection.execute("SELECT * FROM users WHERE username = ?", [username]);
             if (users.length > 0) {
+                if (users[0].password === null) {
+                    return done(null, false, { message: "Use Google login" }); 
+                }
                 const isMatch = await bcrypt.compare(password, users[0].password);
                 return isMatch ? done(null, users[0]) : done(null, false);
             }
@@ -145,7 +185,7 @@ passport.use(
                 if (users.length > 0) {
                     return done(null, users[0]);
                 } else {
-                    await connection.execute("INSERT INTO users(username, password) VALUES (?, ?)", [profile.email, "google"]);
+                    await connection.execute("INSERT INTO users(username, password) VALUES (?, ?)", [profile.email,'google']); 
                     const [newUser] = await connection.execute("SELECT * FROM users WHERE username = ?", [profile.email]);
                     return done(null, newUser[0]);
                 }

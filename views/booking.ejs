@@ -14,30 +14,41 @@
     </header>
 
     <section class="booking-container">
-        <div class="bus-info">
-            <h2><%= busName %></h2>
-            <p><strong>Route:</strong> <%= busRoute %></p>
-            <p><strong>Price:</strong> ₹<%= busPrice %> per seat</p>
-        </div>
-
-        <div class="seat-selection">
-            <h3>Select Your Seats (<span id="seat-count">0</span> Selected)</h3>
-            <div class="seats-grid">
-                <% for (let i = 1; i <= 40; i++) { %>
-                    <div class="seat" onclick="selectSeat(this)" data-seat="<%= i %>">
-                        <%= i %>
-                    </div>
-                <% } %>
+        <% if (userdetail) { %>
+            <div class="bus-info">
+                <h2><%= busName %></h2>
+                <p><strong>Route:</strong> <%= busRoute %></p>
+                <p><strong>Price:</strong> ₹<%= busPrice %> per seat</p>
             </div>
-        </div>
 
-        <div class="passenger-details" id="passenger-details" style="display: none;">
-            <h3>Passenger Details</h3>
-            <form id="passenger-form">
-                <div id="passenger-fields"></div>
-                <button type="submit" class="proceed-btn">Proceed to Payment 💳</button>
-            </form>
-        </div>
+            <div class="seat-selection">
+                <h3>Select Your Seats (<span id="seat-count">0</span> Selected)</h3>
+                <div class="seats-grid">
+                    <% for (let i = 1; i <= 40; i++) { %>
+                        <div class="seat" onclick="selectSeat(this)" data-seat="<%= i %>">
+                            <%= i %>
+                        </div>
+                    <% } %>
+                </div>
+            </div>
+
+            <div class="passenger-details" id="passenger-details" style="display: none;">
+                <h3>Passenger Details</h3>
+                <form id="passenger-form" action="/payment" method="POST">
+                    <input type="hidden" name="bus" value="<%= busName %>">
+                    <input type="hidden" name="route" value="<%= encodeURIComponent(busRoute) %>">
+                    <input type="hidden" name="price" value="<%= busPrice %>">
+                    <input type="hidden" name="username" value="<%= userdetail %>">
+                    <input type="hidden" name="seats" id="selected-seats" value="">
+                    <div id="passenger-fields"></div>
+                    <button type="submit" class="proceed-btn">Proceed to Payment 💳</button>
+                </form>
+            </div>
+        <% } else { %>
+            <div class="auth-message">
+                <p>You need to <a href="/login">log in</a> or <a href="/signup">sign up</a> to book tickets.</p>
+            </div>
+        <% } %>
     </section>
 
     <script>
@@ -47,16 +58,15 @@
             const seatNumber = seat.getAttribute("data-seat");
 
             if (selectedSeats.includes(seatNumber)) {
-                
                 selectedSeats = selectedSeats.filter(num => num !== seatNumber);
                 seat.classList.remove("selected");
             } else {
-                
                 selectedSeats.push(seatNumber);
                 seat.classList.add("selected");
             }
 
             document.getElementById("seat-count").textContent = selectedSeats.length;
+            document.getElementById("selected-seats").value = selectedSeats.join(",");
             updatePassengerForm();
         }
 
