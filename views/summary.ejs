@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment Summary</title>
+    <link rel="stylesheet" href="/styles/summary.css">
+</head>
+<body>
+    <div class="summary-container">
+        <h1>Payment Summary</h1>
+        <div class="summary-details">
+            <p><strong>Bus:</strong> <%= bus %></p>
+            <p><strong>Route:</strong> <%= route %></p>
+            <p><strong>Price:</strong> ₹<%= price %></p>
+            <p><strong>Seats:</strong> <%= seats %></p>
+            <p><strong>Status:</strong> <%= status %></p>
+        </div>
+        <a href="/">Back to Home</a>
+    </div>
+</body>
+</html>
