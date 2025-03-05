@@ -12,7 +12,6 @@
             font-family: Arial, sans-serif;
         }
 
-        /* Full-screen background with gradient */
         body {
             width: 100%;
             height: 100vh;
@@ -23,14 +22,13 @@
             background: linear-gradient(135deg, #1a1a1a, #444);
         }
 
-        /* Transparent Navbar */
         nav {
             display: flex;
             align-items: center;
             justify-content: space-between;
             padding: 15px 20px;
-            background: rgba(255, 255, 255, 0.1); /* Transparent effect */
-            backdrop-filter: blur(10px); /* Frosted glass effect */
+            background: rgba(255, 255, 255, 0.1); 
+            backdrop-filter: blur(10px); 
             color: white;
             box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.1);
             position: fixed;
@@ -89,7 +87,6 @@
             color: white;
         }
 
-        /* Login container */
         .container {
             background-color: white;
             padding: 25px;
@@ -101,7 +98,7 @@
             align-items: center;
             width: 320px;
             text-align: center;
-            margin-top: 80px; /* To avoid navbar overlap */
+            margin-top: 80px; 
         }
 
         form {
@@ -157,7 +154,7 @@
         svg {
             margin-right: 10px;
         }
-        /* Google Sign-in Button */
+ 
         .google-btn {
             display: flex;
             align-items: center;
@@ -190,7 +187,6 @@
 </head>
 <body>
 
-    <!-- Transparent Navigation Bar -->
     <nav>
         <div class="nav-left">
             <img src="/images/logo.svg" alt="Logo" class="logo-svg" onerror="this.style.display='none';">
@@ -202,7 +198,6 @@
         </div>
     </nav>
 
-    <!-- Login Form -->
     <div class="container">
         <h3>sign-up</h3>
         <form action="/signup" method="post">
