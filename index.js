@@ -64,11 +64,11 @@ const destination = [
 ];
 
 const buse = [
-    { name: "Sunrise Tours", route: "Diu → Hyderabad", price: 2500, image: "/images/bus1.jpg" },
-    { name: "Royal Express", route: "Diu → Hyderabad", price: 2300, image: "/images/bus2.jpeg" },
-    { name: "Silver Line Travels", route: "Hyderabad → Diu", price: 2700, image: "/images/bus3.jpg" },
-    { name: "Blue Star Coaches", route: "Hyderabad → Diu", price: 2600, image: "/images/bus2.jpeg" },
-    { name: "FastTrack Bus", route: "Diu → Hyderabad", price: 2400, image: "/images/bus1.jpg" }
+    { name: "Sunrise Tours", route: "Diu → Hyderabad", price: 2500, image: "/images/bus4.jpg" },
+    { name: "Royal Express", route: "Diu → Hyderabad", price: 2300, image: "/images/bus5.jpg" },
+    { name: "Silver Line Travels", route: "Hyderabad → Diu", price: 2700, image: "/images/bus6.jpg" },
+    { name: "Blue Star Coaches", route: "Hyderabad → Diu", price: 2600, image: "/images/bus7.jpg" },
+    { name: "FastTrack Bus", route: "Diu → Hyderabad", price: 2400, image: "/images/bus8.jpg" }
 ];
 
 app.get("/search",(req,res)=>{
