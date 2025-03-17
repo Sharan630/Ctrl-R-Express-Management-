@@ -9,6 +9,9 @@ import { Strategy } from "passport-local";
 import GoogleStrategy from "passport-google-oauth2";
 import session from "express-session";
 import dotenv from "dotenv";
+import fs from "fs";
+import PDFDocument from "pdfkit";
+import QRCode from "qrcode";
 
 dotenv.config();
 
@@ -104,6 +107,7 @@ function ensureAuthenticated(req, res, next) {
     }
     res.redirect("/login");
 }
+
 app.get("/book", ensureAuthenticated, async (req, res) => {
     const { bus, route, price } = req.query;
     const userdetail = req.user.username;
@@ -114,9 +118,14 @@ app.get("/book", ensureAuthenticated, async (req, res) => {
             [bus, decodeURIComponent(route)]
         );
 
-        const reservedSeats = bookings
-            .flatMap(booking => JSON.parse(booking.seats))
-            .map(seat => parseInt(seat, 10));
+        const reservedSeats = bookings.flatMap(booking => {
+            try {
+                return booking.seats ? JSON.parse(booking.seats) : [];
+            } catch (error) {
+                console.error("Error parsing seats JSON:", error);
+                return [];
+            }
+        }).map(seat => parseInt(seat, 10));
 
         res.render("booking", {
             busName: bus,
@@ -131,33 +140,112 @@ app.get("/book", ensureAuthenticated, async (req, res) => {
     }
 });
 
-
 app.post("/payment", ensureAuthenticated, async (req, res) => {
     const { bus, route, price, seats } = req.body;
     const user_id = req.user.id;
     const username = req.user.username;
 
+    let passengers = [];
+    seats.split(",").forEach((seat, index) => {
+        passengers.push({
+            name: req.body[`passenger${index + 1}-name`],
+            age: req.body[`passenger${index + 1}-age`]
+        });
+    });
+
     try {
         const paymentStatus = 'Success'; 
-        const seatsArray = JSON.stringify(seats.split(","));
+        const seatsArray = JSON.stringify(seats.split(",")); 
         const decodedRoute = decodeURIComponent(route);
+        const passengersJSON = JSON.stringify(passengers); 
 
         await connection.execute(
-            "INSERT INTO payments (user_id, username, bus, route, price, seats, payment_status, seat_reserved) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
-            [user_id, username, bus, decodedRoute, price, seatsArray, paymentStatus, 1]
+            "INSERT INTO payments (user_id, username, bus, route, price, seats, payment_status, seat_reserved, passengers) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
+            [user_id, username, bus, decodedRoute, price, seatsArray, paymentStatus, 1, passengersJSON]
         );
 
-        res.redirect(`/summary?bus=${encodeURIComponent(bus)}&route=${encodeURIComponent(decodedRoute)}&price=${price}&seats=${seatsArray}&status=${paymentStatus}`);
+        res.redirect(`/summary?bus=${encodeURIComponent(bus)}&route=${encodeURIComponent(decodedRoute)}&price=${price}&seats=${seatsArray}&status=${paymentStatus}&passengers=${encodeURIComponent(passengersJSON)}`);
     } catch (error) {
         console.error("Error during payment processing:", error);
         res.status(500).send("Internal Server Error");
     }
 });
 
+app.get("/summary", ensureAuthenticated, (req, res) => {
+    const { bus, route, price, seats, status, passengers } = req.query;
 
-app.get("/summary", (req, res) => {
-    const { bus, route, price, seats, status } = req.query;
-    res.render("summary", { bus, route, price, seats, status });
+    try {
+        const passengersData = JSON.parse(decodeURIComponent(passengers)); 
+
+        res.render("summary", {
+            bus,
+            route,
+            price,
+            seats,
+            status,
+            passengers: passengersData, 
+        });
+    } catch (error) {
+        console.error("Error parsing passengers:", error);
+        res.status(500).send("Internal Server Error");
+    }
+});
+
+app.get("/download-ticket", ensureAuthenticated, async (req, res) => {
+    const { bus, route, price, seats, status, passengers } = req.query;
+    
+    const doc = new PDFDocument({ size: "A4", margin: 50 });
+    const filename = `ticket_${Date.now()}.pdf`;
+    const qrText = `Bus: ${bus}, Route: ${route}, Price: ₹${price}, Seats: ${seats}, Status: ${status}`;
+
+    const ticketsDir = path.join(__dirname, "tickets");
+
+    if (!fs.existsSync(ticketsDir)) {
+        fs.mkdirSync(ticketsDir, { recursive: true });
+    }
+
+    const qrCodePath = path.join(ticketsDir, `qr_${Date.now()}.png`);
+
+    try {
+        await QRCode.toFile(qrCodePath, qrText, { width: 150 });
+
+        res.setHeader("Content-Disposition", `attachment; filename=${filename}`);
+        res.setHeader("Content-Type", "application/pdf");
+
+        doc.pipe(res);
+        doc.font("Helvetica-Bold").fontSize(22).fillColor("#007bff").text("Bus Ticket", { align: "center" });
+        doc.moveDown();
+
+        doc.font("Helvetica").fontSize(14).fillColor("#000");
+        doc.text(`Bus: ${bus}`);
+        doc.text(`Route: ${route}`);
+        doc.text(`Price: ₹${price} per seat`);
+        doc.text(`Seats: ${seats.replace(/[\[\]"]+/g, '')}`);
+        doc.text(`Status: ${status}`);
+        doc.moveDown();
+
+        doc.font("Helvetica-Bold").fontSize(16).fillColor("#007bff").text("Passenger Details:");
+        doc.moveDown();
+
+        let passengerData;
+        try {
+            passengerData = JSON.parse(decodeURIComponent(passengers));
+            doc.font("Helvetica").fontSize(12).fillColor("#000");
+            passengerData.forEach((passenger, index) => {
+                doc.text(`Passenger ${index + 1}: ${passenger.name}, Age: ${passenger.age}`);
+            });
+        } catch (error) {
+            console.error("Error parsing passenger details:", error);
+            doc.fontSize(14).text("Error loading passenger details.");
+        }
+
+        doc.image(qrCodePath, 380, 140, { width: 120 });
+
+        doc.end();
+    } catch (error) {
+        console.error("Error generating QR code:", error);
+        res.status(500).send("Internal Server Error");
+    }
 });
 
 app.listen(port, () => {
