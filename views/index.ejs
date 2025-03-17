@@ -14,10 +14,10 @@
                 <p>Ctrl-R Xpress</p>
             </div>
 
-            <div class="search-bar">
-                <input type="text" placeholder="Enter place,destination or landmark">
-                <button role="button" onclick="window.location.href='/search'">Search</button>
-            </div>
+            <form class="search-bar" action="/search" method="GET">
+                <input type="text" name="q" placeholder="Enter place, destination, or landmark">
+                <button type="submit">Search</button>
+            </form>
 
             <div class="nav-right">
                 <% if(userdetail){ %> 
