@@ -58,6 +58,24 @@ app.get("/", (req, res) => {
     res.render("index", { destinations, buses, userdetail });
 });
 
+const destination = [
+    { name: "Diu", image: "/images/mumbai.jpg" },
+    { name: "Hyderabad", image: "/images/delhi.jpg" }
+];
+
+const buse = [
+    { name: "Sunrise Tours", route: "Diu → Hyderabad", price: 2500, image: "/images/bus1.jpg" },
+    { name: "Royal Express", route: "Diu → Hyderabad", price: 2300, image: "/images/bus2.jpeg" },
+    { name: "Silver Line Travels", route: "Hyderabad → Diu", price: 2700, image: "/images/bus3.jpg" },
+    { name: "Blue Star Coaches", route: "Hyderabad → Diu", price: 2600, image: "/images/bus2.jpeg" },
+    { name: "FastTrack Bus", route: "Diu → Hyderabad", price: 2400, image: "/images/bus1.jpg" }
+];
+
+app.get("/search",(req,res)=>{
+    res.render("diu",{destination,buse})
+})
+
+
 app.get("/login", (req, res) => res.render("login"));
 app.get("/signup", (req, res) => res.render("signup"));
 
