@@ -4,10 +4,25 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Payment Summary</title>
-    <link rel="stylesheet" href="/styles/summary.css">
+    <link rel="stylesheet" href="/summary.css">
 </head>
+
 <body>
-    <div class="summary-container">
+
+    <header>
+        <div class="logo">
+            <h1>Bus Ticketing</h1>
+        </div>
+        <nav>
+            <ul>
+                <li><a href="/">Home</a></li>
+                <li><a href="/book">My Bookings</a></li>
+                <li><a href="/contact">Contact</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <section class="summary-container">
         <h1>Payment Summary</h1>
         <div class="summary-details">
             <p><strong>Bus:</strong> <%= bus %></p>
@@ -16,7 +31,28 @@
             <p><strong>Seats:</strong> <%= seats %></p>
             <p><strong>Status:</strong> <%= status %></p>
         </div>
-        <a href="/">Back to Home</a>
-    </div>
+
+        <div class="details-box passenger-details">
+            <h3>Passenger Details:</h3>
+            <ul>
+                <% passengers.forEach((passenger, index) => { %>
+                    <li>👤 <strong>Passenger <%= index + 1 %>:</strong> <%= passenger.name %>, Age: <%= passenger.age %></li>
+                <% }); %>
+            </ul>
+        </div>
+
+        <div class="button-group">
+            <a href="/download-ticket?bus=<%= bus %>&route=<%= encodeURIComponent(route) %>&price=<%= price %>&seats=<%= seats %>&status=<%= status %>&passengers=<%= encodeURIComponent(JSON.stringify(passengers)) %>" class="btn-download">
+                Download PDF
+            </a>
+            <a href="/" class="btn-home">Back to Home</a>
+        </div>
+    </section>
+
+    <footer>
+        <p>Contact: +91 98765 43210 | Email: support@busticketing.com</p>
+        <p>&copy; 2025 Bus Ticketing. All Rights Reserved.</p>
+    </footer>
+
 </body>
 </html>
