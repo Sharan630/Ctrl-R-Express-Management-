@@ -15,9 +15,21 @@
             </div>
 
             <div class="search-bar">
-                <input type="text" placeholder="Enter place,destination or landmark">
-                <button role="button" onclick="window.location.href='/search'">Search</button>
+                <input type="text" id="searchInput" placeholder="Enter place, destination, or landmark">
+                <button role="button" onclick="searchLocation()">Search</button>
             </div>
+            
+            <script>
+                function searchLocation() {
+                    const input = document.getElementById("searchInput").value.trim();
+                    if (input) {
+                        window.location.href = `/search?location=${encodeURIComponent(input)}`;
+                    } else {
+                        alert("Please enter a location to search.");
+                    }
+                }
+            </script>
+            
 
             <div class="nav-right">
                 <% if(userdetail){ %> 
