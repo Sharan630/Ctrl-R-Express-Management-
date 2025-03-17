@@ -26,15 +26,11 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, "public")));
 app.use(
     session({
-        secret: process.env.SESSION_SECRET || "topsecret",
+        secret: "topsecret",
         resave: false,
         saveUninitialized: false,
-        cookie: {
-            httpOnly: true,
-            secure: process.env.NODE_ENV === "production",
-            maxAge: 60 * 60 * 1000,
-        },
-    })
+        cookie: { maxAge: null } 
+    })
 );
 app.use(passport.session());
 app.use(passport.initialize());
@@ -108,18 +104,33 @@ function ensureAuthenticated(req, res, next) {
     }
     res.redirect("/login");
 }
-
-app.get("/book", ensureAuthenticated, (req, res) => {
+app.get("/book", ensureAuthenticated, async (req, res) => {
     const { bus, route, price } = req.query;
     const userdetail = req.user.username;
 
-    res.render("booking", { 
-        busName: bus, 
-        busRoute: route, 
-        busPrice: price,
-        userdetail
-    });
+    try {
+        const [bookings] = await connection.execute(
+            "SELECT seats FROM payments WHERE bus = ? AND route = ?",
+            [bus, decodeURIComponent(route)]
+        );
+
+        const reservedSeats = bookings
+            .flatMap(booking => JSON.parse(booking.seats))
+            .map(seat => parseInt(seat, 10));
+
+        res.render("booking", {
+            busName: bus,
+            busRoute: route,
+            busPrice: price,
+            userdetail,
+            reservedSeats
+        });
+    } catch (error) {
+        console.error("Error fetching reserved seats:", error);
+        res.status(500).send("Internal Server Error");
+    }
 });
+
 
 app.post("/payment", ensureAuthenticated, async (req, res) => {
     const { bus, route, price, seats } = req.body;
@@ -154,19 +165,17 @@ app.listen(port, () => {
 });
 
 passport.use(
+    "local",
     new Strategy(async function (username, password, done) {
         try {
             const [users] = await connection.execute("SELECT * FROM users WHERE username = ?", [username]);
             if (users.length > 0) {
-                if (users[0].password === null) {
-                    return done(null, false, { message: "Use Google login" }); 
-                }
                 const isMatch = await bcrypt.compare(password, users[0].password);
                 return isMatch ? done(null, users[0]) : done(null, false);
             }
             return done(null, false);
         } catch (error) {
-            console.error("Error during local strategy:", error);
+            console.error(error);
             return done(error);
         }
     })
@@ -185,17 +194,30 @@ passport.use(
                 if (users.length > 0) {
                     return done(null, users[0]);
                 } else {
-                    await connection.execute("INSERT INTO users(username, password) VALUES (?, ?)", [profile.email,'google']); 
+                    await connection.execute("INSERT INTO users(username, password) VALUES (?, ?)", [profile.email, "google"]);
                     const [newUser] = await connection.execute("SELECT * FROM users WHERE username = ?", [profile.email]);
                     return done(null, newUser[0]);
                 }
             } catch (err) {
-                console.error("Error during Google OAuth strategy:", err);
+                console.error(err);
                 return done(err);
             }
         }
     )
 );
 
-passport.serializeUser((user, done) => done(null, user));
-passport.deserializeUser((user, done) => done(null, user));
+passport.serializeUser((user, done) => {
+    done(null, user);
+});
+
+passport.deserializeUser(async (user, done) => {
+    try {
+        const [users] = await connection.execute("SELECT * FROM users WHERE username = ?", [user.username]);
+        if (users.length === 0) {
+            return done(null, false);  
+        }
+        done(null, users[0]);
+    } catch (err) {
+        done(err, null);
+    }
+});
