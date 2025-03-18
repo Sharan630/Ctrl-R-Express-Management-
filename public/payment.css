@@ -1,54 +1,77 @@
+/* Google Font */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
+
 body {
-    font-family: Arial, sans-serif;
-    background-color: #f4f4f4;
-    margin: 0;
-    padding: 0;
+    font-family: 'Poppins', sans-serif;
+    background: #f8f9fa;
     display: flex;
     justify-content: center;
     align-items: center;
     height: 100vh;
+    margin: 0;
 }
 
 .payment-container {
-    background-color: #fff;
+    background: #fff;
     padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    width: 300px;
-}
-
-h1 {
+    width: 350px;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
     text-align: center;
-    margin-bottom: 20px;
 }
 
-.form-group {
+h2 {
     margin-bottom: 15px;
+    color: #333;
 }
 
-label {
+.input-group {
+    margin-bottom: 15px;
+    text-align: left;
+}
+
+.input-group label {
     display: block;
+    font-weight: 600;
     margin-bottom: 5px;
 }
 
-input {
-    width: 100%;
-    padding: 8px;
-    box-sizing: border-box;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-}
-
-button {
+.input-group input {
     width: 100%;
     padding: 10px;
-    background-color: #28a745;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+    transition: 0.3s;
 }
 
-button:hover {
-    background-color: #218838;
+.input-group input:focus {
+    border-color: #007bff;
+    outline: none;
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+}
+
+.row {
+    display: flex;
+    justify-content: space-between;
+}
+
+.half {
+    width: 48%;
+}
+
+.pay-btn {
+    width: 100%;
+    background: #007bff;
+    color: white;
+    padding: 12px;
+    font-size: 18px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.pay-btn:hover {
+    background: #0056b3;
 }
