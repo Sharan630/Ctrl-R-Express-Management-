@@ -72,7 +72,16 @@ const buse = [
 ];
 
 app.get("/search",(req,res)=>{
-    res.render("diu",{destination,buse})
+    const query = req.query.q ? req.query.q.toLowerCase() : "";
+    if (query === "diu") {
+        res.render("diu", { destination, buse });
+    } else if(query==="hyderabad"){
+        res.render("hyderabad",{ destination, buse });
+    }
+    else{
+        res.send("Invalid search");
+    }
+    
 })
 
 
