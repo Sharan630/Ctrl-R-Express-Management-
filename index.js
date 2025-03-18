@@ -78,6 +78,9 @@ app.get("/search",(req,res)=>{
     } else if(query==="hyderabad"){
         res.render("hyderabad",{ destination, buse });
     }
+    else if(query===""){
+        res.render("diu", { destination, buse });
+    }
     else{
         res.send("Invalid search");
     }
