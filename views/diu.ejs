@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bus Booking</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background-color: #f8f9fa;
+            padding: 20px;
+        }
+
+        .container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px;
+            max-width: 1200px;
+            margin: auto;
+        }
+
+        .bus-card {
+            background-color: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+            width: 100%;
+            max-width: 320px;
+            text-align: center;
+        }
+
+        .bus-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0px 6px 16px rgba(0, 0, 0, 0.2);
+        }
+
+        .bus-card img {
+            width: 100%;
+            height: 180px;
+            border-radius: 8px;
+            object-fit: cover;
+        }
+
+        .bus-card h3 {
+            color: #333;
+            margin: 15px 0 10px;
+            font-size: 20px;
+        }
+
+        .bus-card p {
+            color: #666;
+            font-size: 16px;
+            margin: 5px 0;
+        }
+
+        .bus-card button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            font-size: 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease-in-out;
+            margin-top: 10px;
+        }
+
+        .bus-card button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <% buse.forEach(bus => { %>
+            <div class="bus-card">
+                <img src="<%= bus.image %>" alt="<%= bus.name %>">
+                <h3><%= bus.name %></h3>
+                <p>📍 Route: <%= bus.route %></p>
+                <p>💵 Price: ₹<%= bus.price %></p>
+                <button onclick="window.location.href='/book?bus=<%= encodeURIComponent(bus.name) %>&route=<%= encodeURIComponent(bus.route) %>&price=<%= bus.price %>'">
+                    Book Now
+                </button>
+            </div>
+        <% }) %>
+    </div>
+
+</body>
+</html>
