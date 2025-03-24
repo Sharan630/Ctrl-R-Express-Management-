@@ -85,7 +85,7 @@
             <div class="bus-card">
                 <img src="<%= bus.image %>" alt="<%= bus.name %>">
                 <h3><%= bus.name %></h3>
-                <p>📍 Route: <%= bus.route %></p>
+                <p>📍 Route: <%= bus.arrival %> → <%= bus.destination %></p>
                 <p>💵 Price: ₹<%= bus.price %></p>
                 <button onclick="window.location.href='/book?bus=<%= encodeURIComponent(bus.name) %>&route=<%= encodeURIComponent(bus.route) %>&price=<%= bus.price %>'">
                     Book Now
